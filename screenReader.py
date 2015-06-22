@@ -3,6 +3,7 @@
 import numpy
 from PIL import Image
 
+# THIS SETTINGS FOR SAMSUNG GALAXY NOTE II
 ROWS = 5
 COLS = 6
 WIDTH = 720
