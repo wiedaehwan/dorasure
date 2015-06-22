@@ -48,6 +48,13 @@ class Solver:
         # 1 is 8-direction   2 is 4-direction
         self.__diagonal = v and 1 or 2
 
+    def init_map_board(self):
+        board = np.array(self.board)
+        map_board = np.arange(self.rows * self.cols).reshape(self.rows, self.cols)
+        print board[:self.rows, :self.cols]
+        board[:self.rows, :self.cols] = map_board
+        return board
+
     def init_board(self):
         board = [0 for _ in range((self.rows + 1) * (self.cols + 1))]
         for i, b in enumerate(board):
@@ -67,18 +74,41 @@ class Solver:
         for j in range(self.rows):
             for i in range(self.cols):
                 self.board[i + j + j * self.cols] = Drop(random.choice(range(self.drop_size)))
+        self.get_most_drop()
 
     def get_most_drop(self, name=0):
         if name:
             board = map(lambda x: getattr(x, 'name'), self.board)
         else:
             board = self.board
-        board = np.array(board).reshape(self.rows + 1, self.cols + 1)[:self.rows + 0, :self.cols]
-        return Counter(board.flatten()).most_common(self.drop_size)
+        board = np.array(board).reshape(self.rows + 1, self.cols + 1)[:self.rows, :self.cols]
+        self.most_drop = Counter(board.flatten()).most_common(self.drop_size)
+
+    def get_start_drop(self):
+        for i in range(1, 4):
+            for item, count in self.most_drop:
+                if count % 3 == i:
+                    return item
+        return item
 
     def print_most_drop(self, name=0):
         print self.get_most_drop(name=name)
 
+    def find_next(self):
+        pass
+
+    def find_matches(self):
+        pass
+
+    def update_most_drop(self):
+        new_most_drop = []
+        new_temp_drop = []
+        for name, count in self.most_drop:
+            for i in range(count // 3):
+                new_most_drop.append(name, 3)
+            if count % 3:
+                for i in range(count % 3):
+                    new_temp_drop.insert(0, name)
 
 if __name__ == '__main__':
     solver = Solver()
@@ -87,3 +117,5 @@ if __name__ == '__main__':
     solver.print_board()
     solver.print_most_drop(name=1)
     solver.print_most_drop()
+    print solver.get_start_drop()
+    print solver.init_map_board()
